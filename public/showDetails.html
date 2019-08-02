@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+		<style>
+			div#detailsPage{
+				padding:5px;
+				margin:0 auto;
+				width:90%;
+				text-align:center;
+			}
+			table{
+				width:100%;
+				border-collapse:separate;
+				border-spacing:10px;
+			}
+			#tableBox{
+				width: 100%;
+				height:400px;
+				
+			}
+			tr:nth-of-type(odd){
+				background: #8080802e;
+			}
+			tr:nth-of-type(even){
+				background: #bdc00226;
+			}
+			td{
+				padding:10px;
+			}
+			button{
+				border-radius:5px;
+				margin:80px;
+				width:120px;
+				height:60px;
+				font-size:20px;
+				transition:1s;
+				user-selector:none;
+			}
+			button:hover{
+				background:black;
+				color:yellow;
+				text-shadow:0 0 20px;
+				border:8px solid yellow;
+			}
+			thead{
+				font-size:20px;
+				font-weight:bolder;
+				background:cyan;
+			}
+		</style>
+</head>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<body>
+<div id="detailsPage">
+	<div id="tableBox">
+		<table border="1">
+		<h1>用户管理</h1>
+			<thead align="center"><tr><td>编号</td><td>用户名</td><td>密码</td><td>性别</td><td>生日</td><td>月薪</td><td>邮箱</td><td>住址</td><td colspan="2">操作</td></thead>
+			<tbody>
+				
+			</tbody>
+		</table>
+	</div>
+	<button id="prePage"><<上一页</button>
+	<button id="loadMore">下一页>></button>
+	
+	<br><br>
+	<a href="regist.html">添加用户</a>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	
+	<a href="index.html">返回首页</a>
+</div>
+<script>
+	$(function(){
+		$.ajax({
+			url:"http://w3nlin4.applinzi.com/user/getDetails",
+			type:"get",
+			success:function(result){
+				console.log(result);
+				console.log(result.length);
+				//初始遍历元素
+				for(var i=0;i<result.length;i++){  
+					 if(i<5){
+						var oTr=document.createElement("tr");
+						
+					 for(var key in result[i]){   
+						 var oTd=document.createElement("td");
+						 
+						 var sex="";
+						 if(result[i]["usex"]==1){
+							 sex="男";
+						 }else if(result[i]["usex"]==0){
+						 sex="女";
+						}else{
+							sex="未知";
+						}
+						 if(key=="ubirthday"){
+							var date=new Date(result[i]["ubirthday"]);
+							result[i]["ubirthday"]=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+(date.getDate());
+						 }
+						 console.log(result[i][key]);
+						 if(key=="usex"){oTd.innerHTML=sex;}
+						 else{
+							oTd.innerHTML=result[i][key];
+						 }
+						 
+						 oTr.appendChild(oTd);
+					 }
+						 var oTd1=document.createElement("td");
+						 oTd1.innerHTML=`<a class="del" href="javascript:;">删除</a>`;
+
+						 var oTd2=document.createElement("td");
+						 oTd2.innerHTML=`<a class="upd" href="javascript:;">修改</a>`;
+						 
+						 
+							
+						 oTr.appendChild(oTd1);
+						 oTr.appendChild(oTd2);
+					 var frag=document.createDocumentFragment();
+					 frag.appendChild(oTr);
+					 document.querySelector("table>tbody").appendChild(frag);
+					 }
+
+
+
+					//给tr绑定事件
+					var t_f_del=true;
+					 $("tbody>tr").mouseenter(function(){
+						     t_f_del=true;
+							 var $This=$(this).index()+1;
+							 var $userID=0;
+						 })
+
+
+					$("tbody>tr").find("a.del").click(function(){  /*删除按钮操作*/
+						if(t_f_del){
+							var res=confirm("确认删除?");
+							if(res){
+								$(this).css({background:"red"});
+								$userID=$(this).parent().parent().children().first().html();
+								$.ajax({
+									url:"http://w3nlin4.applinzi.com/user/delete",
+									data:{uid:$userID},
+									type:"post",
+									success:function(){}
+								})
+								$(this).parent().parent().remove();
+								t_f_del=false;
+							}else{
+								t_f_del=false;
+							}
+						}
+					});  /*删除按钮操作-结束*/
+
+					var t_f_upd=true;
+
+							$("tbody>tr").find("a.upd").click(function(){  /*修改按钮操作*/
+								$userID=$(this).parent().parent().children().first().html();
+								
+								
+								if(t_f_upd){
+									t_f_upd=false;
+									$.ajax({
+										url:"http://w3nlin4.applinzi.com/user/toUpdata",
+										data:{uidUpd:$userID},
+										type:"post",
+									})
+									$(this).attr("href","update.html");
+								}
+
+
+							}); /*修改按钮操作--结束*/
+				}
+
+				/*var frag=document.createDocumentFragment();
+				frag.appendChild(tr)
+				document.querySelector("table>tbody").appendChild(frag);*/
+
+				
+				var upage=1;
+				var loadMoreT_f=true;
+				//上一页
+				$("#prePage").click(function(){
+					loadMoreT_f=true;
+					console.log(upage);
+					
+					if(upage>1){
+						if(maxPageT_f){upage-=2;maxPageT_f=false;}else{upage--;};
+					}
+					
+					$.ajax({
+						url:"http://w3nlin4.applinzi.com/user/list",
+						type:"get",
+						data:{
+							upage:upage,
+							ucount:5
+						},
+						success:function(result){
+							console.log(result);
+							
+							if(result.length==5){
+								
+								for(var j=0;j<result.length;j++){
+									$("tbody>tr:nth-child("+(j+1)+")").show();
+								}
+								
+							}
+							//var insertRow="";
+							for(var i=0;i<=result.length;i++){
+									
+						
+							for(var key in result[i]){
+								var date=new Date(result[i]["ubirthday"]);
+							result[i]["ubirthday"]=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+(date.getDate());
+							var sex="";
+						 if(result[i]["usex"]==1){
+							 sex="男";
+						 }else if(result[i]["usex"]==0){
+						 sex="女";
+						}else{sex="未知";}
+							}
+							
+						
+								/*insertRow+=`<tr><td>`+result[i].uid+`</td><td>`+result[i].uname+`</td><td>`+result[i].upwd+`</td><td>`+result[i].usex+`</td><td>`+result[i].ubirthday+
+									`</td><td>`+result[i].usalary+`</td><td>`+result[i].uemail+`</td><td>`+result[i].uaddress+
+										`</td><td><a class="del" href="javascript:;">删除</a></td><td><a class="upd" href="javascript:;">修改</a></td></tr>`;*/
+							if(i<result.length){
+								
+								
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(0).html(result[i].uid);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(1).html(result[i].uname);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(2).html(result[i].upwd);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(3).html(sex);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(4).html(result[i].ubirthday);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(5).html(result[i].usalary);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(6).html(result[i].uemail);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(7).html(result[i].uaddress);
+							
+							}
+							}
+							
+							
+							
+						}
+					})
+				})
+
+				//加载更多..
+				var loadMoreT_f=true;
+				var maxPageT_f=false;
+				$("#loadMore").click(function(){
+					console.log(upage);
+					console.log(loadMoreT_f);
+					
+					if(loadMoreT_f){upage++;}
+					$.ajax({
+						url:"http://w3nlin4.applinzi.com/user/list",
+						type:"get",
+						data:{
+							upage:upage,
+							ucount:5
+						},
+						success:function(result){
+							console.log(result);
+							
+							if(result.length!=0){
+								//当返回的每页数据量小于5条时，隐藏缺少的部分
+							if(result.length<5){
+								
+								loadMoreT_f=false;
+								maxPageT_f=true;
+								for(var j=0;j<5-result.length;j++){
+									$("tbody>tr:nth-child("+(result.length+j+1)+")").hide();
+								}
+							}else{
+								loadMoreT_f=true;
+							}
+							//var insertRow="";
+							var sex="";
+							for(var i=0;i<=result.length;i++){
+								for(var key in result[i]){
+									
+						 if(result[i]["usex"]==1){
+							 sex="男";
+						 }else if(result[i]["usex"]==0){
+						 sex="女";
+						}else{
+							sex="未知";
+						}
+								var date=new Date(result[i]["ubirthday"]);
+							result[i]["ubirthday"]=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+(date.getDate());
+
+							}
+								/*insertRow+=`<tr><td>`+result[i].uid+`</td><td>`+result[i].uname+`</td><td>`+result[i].upwd+`</td><td>`+result[i].usex+`</td><td>`+result[i].ubirthday+
+									`</td><td>`+result[i].usalary+`</td><td>`+result[i].uemail+`</td><td>`+result[i].uaddress+
+										`</td><td><a class="del" href="javascript:;">删除</a></td><td><a class="upd" href="javascript:;">修改</a></td></tr>`;*/
+							if(i<result.length){
+								
+								
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(0).html(result[i].uid);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(1).html(result[i].uname);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(2).html(result[i].upwd);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(3).html(sex);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(4).html(result[i].ubirthday);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(5).html(result[i].usalary);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(6).html(result[i].uemail);
+							$("tbody>tr:nth-child("+(i+1)+")").children().eq(7).html(result[i].uaddress);
+							}
+							}
+							}else if(result.length==0){
+								loadMoreT_f=false;
+								maxPageT_f=true;
+							}
+							
+							
+							
+							
+						}
+					})
+				})
+			},
+				
+		})
+			
+	})
+	
+</script>
+</body>
+</html>

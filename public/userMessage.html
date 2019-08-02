@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+		<style>
+			#userMessagePage{
+				padding:5px;
+				width:360px;
+				margin:0 auto;
+				border:1px solid black;
+				}
+				ul{
+					list-style:none;
+					margin-bottom:20px 0;
+					padding:5px;
+					
+				}
+				li{
+					margin:5px 0;
+				}
+				span.u_msg_key{
+					display:inline-block;
+					width:100px;
+					text-align:justify; 
+					text-align-last:justify;
+				}
+				span.u_msg_value{
+					display:inline-block;
+					width:200px;
+					text-align:justify; 
+					text-align-last:justify;
+					color:blue;
+					font-size:20px;
+					font-family:"黑体";
+					font-weight:bold;
+				}
+				
+		</style>
+</head>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<body>
+<div id="userMessagePage" class="animated flip">
+	<h1>用户个人信息页</h1>
+<p></p>
+<ul id="userMessage"></ul>
+<a class="managerLogin"  href="javascript:;">管理员登录</a>
+  <a href="index.html">返回首页</a>
+</div>
+
+<script>
+	$("a.managerLogin").click(function(){
+		var getPsw=prompt("请输入密码..","初始密码123");
+		if(getPsw=="123"){
+			window.location.href="showDetails.html";
+		}else{
+			alert("密码错误!!!___无法进入管理员模式.");
+		}
+	})
+$(function(){
+	$.ajax({
+		url:"http://w3nlin4.applinzi.com/user/getlogin",
+		type:"get",
+		success:function(result){
+			var {uid,uname,upwd,usex,ubirthday,usalary,uemail,uaddress}=result[0];
+		
+			var arr=[];
+			var arr1=[];
+			var str="";
+			for(var key in result[0]){
+			
+			if(key=="ubirthday"){
+				var date=new Date(result[0].ubirthday);
+				result[0]["ubirthday"]=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+(date.getDate());
+			}
+				arr.push(key);
+				if(key=="usex"){
+					result[0][key]==0?result[0][key]="女":result[0][key]==1?result[0][key]="男":result[0][key]="未知";
+				}
+				
+				arr1.push(result[0][key]);
+			};
+			for(var i=0;i<arr.length;i++){
+				var oLi=document.createElement("li");
+				switch(arr[i]){
+					case "uid":
+						str="用户编号";
+						break;
+					case "uname":
+						str="用户名";
+						break;
+					case "upwd":
+						str="密码";
+						break;
+					case "usex":
+						str="性别";
+						break;
+					case "ubirthday":
+						str="生日";
+						break;
+					case "usalary":
+						str="工资";
+						break;
+					case "uemail":
+						str="邮箱";
+						break;
+					case "uaddress":
+						str="地址";
+						break;
+					default:
+						str="----";
+						break;
+ 				}
+
+				oLi.innerHTML=`<span class="u_msg_key">`+str+`</span>`+" : "+`<span class="u_msg_value">`+arr1[i]+`</span>`;
+				var frag=document.createDocumentFragment();
+				frag.appendChild(oLi);
+				document.querySelector("ul#userMessage").appendChild(frag);
+			}
+	},
+
+		})
+});
+</script>
+</body>
+</html>

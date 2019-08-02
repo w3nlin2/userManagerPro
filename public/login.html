@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+		<style>
+		#loginPage{
+		width:600px;
+			height:600px;
+			padding:5px;
+			border:1px solid black;
+			margin:0 auto;
+			border-radius:5px;
+		}
+		#formBox{
+			width:600px;
+			height:600px;
+		}
+		#formBox>table{
+		
+			width:100%;
+			height:200px;
+			box-sizing:border-box;
+			padding-right:10px;
+			
+		}
+		#formBox>table>tbody{
+			border:2px solid green;
+			width:100%;
+			height:60px;
+		}
+		#formBox>table>tbody>tr:nth-child(1),#formBox>table>tbody>tr:nth-child(2){
+			border:2px solid red;
+			width:100%;
+			height:60px;
+		}
+		#formBox>table>tbody>tr:nth-child(1)>td:nth-child(1),#formBox>table>tbody>tr:nth-child(2)>td:nth-child(1){
+			width:24%;
+			height:60px;
+		}
+		#formBox>table>tbody>tr:nth-child(1)>td:nth-child(2),#formBox>table>tbody>tr:nth-child(2)>td:nth-child(2){
+			width:80%;
+			height:60px;
+		}
+		#formBox>table>tbody>tr:nth-child(1)>td:nth-child(2)>input[type=text],#formBox>table>tbody>tr:nth-child(2)>td:nth-child(2)>input[type=text]{
+			width:100%;
+			height:60px;
+			font-size:30px;
+		}
+			span.fcol{
+			font-size:30px;
+			display:inline-block;
+			width:100px;
+			text-align:justify; 
+			text-align-last:justify;
+			}
+			#loginSub{
+				margin-top:100px;
+				width:100%;
+				height:100px;
+				font-size:80px;
+				line-height:100px;
+				transition:1s;
+				border-radius:20px;
+				background:black;
+				color:white;
+			}
+			#loginSub:hover{
+				cursor:pointer;
+				border:5px solid blue;
+				border-radius:50px;
+				padding:5px 0;
+				color:yellow;
+				font-size:80px;
+				line-height:80px;
+				height:100px;
+				background:rgba(0,0,0,0.3);
+				box-sizing:border-box;
+				text-shadow:0 0 20px;
+				background:black;
+			}
+			p{
+				font-size:50px;
+				padding:0;
+				margin:0;
+				height:50px;
+				width:100%;
+				color:transparent;
+			}
+		</style>
+</head>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<body>
+<div id="loginPage" class="animated  fadeInLeft slow">
+	<h1>登录页</h1>
+	<div id="formBox">
+
+	<table>
+		<tr>
+			<td><span class="fcol">用户名</span><span>  :</span></td>
+			<td><input id="u_name" type="text"></td>
+		</tr>
+		<tr>
+			<td><span class="fcol">密码</span><span>  :</span></td>
+			<td><input id="u_pwd" type="text"></td>
+		</tr>
+	</table>
+	<p>--</p>
+	<button id="loginSub">登录</button>
+	</div>
+	<a class="managerLogin"  href="javascript:;">管理员登录</a>
+<a href="index.html">返回首页</a>
+</div>
+<script>
+	$("a.managerLogin").click(function(){
+		var getPsw=prompt("请输入密码..","初始密码123");
+		if(getPsw=="123"){
+			window.location.href="showDetails.html";
+		}else{
+			alert("密码错误!!!___无法进入管理员模式.");
+		}
+	})
+	$(function(){
+		$("#loginSub").click(function(){
+			$.ajax({
+				url:"http://w3nlin4.applinzi.com/user/login",
+				data:{
+					uname:$("#u_name").val(),
+					upwd:$("#u_pwd").val()
+				},
+				type:"get",
+				success:function(result){
+					console.log(result);
+					
+					if(result.code==0){
+					$("p").html("登录失败").css("color","red");
+					}else{
+					$("p").html("登录成功").css("color","blue");
+					setTimeout(function(){window.location.href="userMessage.html";},1000)
+					}
+				},
+				error:function(){
+					$("p").html("error");
+				}
+			})
+		})
+	})
+</script>
+</body>
+</html>

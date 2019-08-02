@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+		<style>
+		#regPage{
+				margin:0 auto;
+				width:600px;
+				padding:20px 5px;
+				
+				
+			}
+			#regPage>.regPageBox{
+				padding:5px;
+				margin:0 auto;
+				border:1px solid black;
+				border-radius:5px;
+				width:90%;
+			}
+			span.fcol{
+			display:inline-block;
+			width:100px;
+			text-align:justify; 
+			text-align-last:justify;
+			padding-bottom:2.5px;
+			}
+			#regBtn{
+			
+				width:100%;
+				margin-top:30px;
+				margin-bottom:20px;
+				font-size:30px;
+				color:grey;
+				border-radius:5px;
+				transition:1s;
+			}
+			#regBtn:hover{
+				color:black;
+				font-weight:bold;
+				padding：5px;
+				border:2px solid blue;
+				border-radius:10px;
+			}
+			td{
+				padding:5px 0;
+			}
+			input{
+				width:300px;
+				border-radius:5px;
+			}
+		</style>
+</head>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<body>
+<div id="regPage" class="animated  slideInRight slow">
+<div class="regPageBox">
+		<h1>注册页</h1>
+<div>
+<table>
+	<tr><td><span class="fcol">用户名</span><span>:</span></td><td><input id="u_name" type="text" placeholder="4-12位之间任意字符"> </td></tr>
+	<tr><td><span class="fcol">密码</span><span>:</span></td><td><input id="u_pwd" placeholder="最少6位，必须含有大写+小写+数字+特殊字符" type="text"> </td></tr>
+	<tr><td><span class="fcol">性别</span><span>:</span></td><td><input id="u_sex" placeholder="男/女" type="text"> </td></tr>
+	<tr><td><span class="fcol">生日</span><span>:</span></td><td><input id="u_birthday" placeholder="0000-00-00" type="text"> </td></tr>
+	<tr><td><span class="fcol">工资</span><span>:</span></td><td><input id="u_salary" placeholder="3-5为数字" type="text"> </td></tr>
+	<tr><td><span class="fcol">邮箱</span><span>:</span></td><td><input id="u_email" placeholder="xxx..@xx.xxx" type="text"> </td></tr>
+  <tr><td><span class="fcol">住址</span><span>:</span></td><td><input id="u_address" placeholder="任意字符" type="text"> </td></tr>
+</table>
+<button id="regBtn">注册</button> 
+<p></p>
+</div>
+<a class="managerLogin"  href="javascript:;">管理员登录</a>
+<a href="index.html">返回首页</a>
+</div>
+</div>
+<script> 
+	$("a.managerLogin").click(function(){
+		var getPsw=prompt("请输入密码..","初始密码123");
+		if(getPsw=="123"){
+			window.location.href="showDetails.html";
+		}else{
+			alert("密码错误!!!___无法进入管理员模式.");
+		}
+	})
+	$(function(){
+		var regArr=[];
+		
+		function fn(inpId,Reg,newSpanCla,trLength){    //input框的id: inpId  //正则:reg  //提示框类名:newSpanCla  //num从1开始tr的长度:trLength
+			var phd="";
+			
+			$(""+inpId).focus(function(){phd=$(this).prop("placeholder"); $(this).prop("placeholder","");});
+			
+			$(""+inpId).blur(function(){
+			$(this).prop("placeholder",phd);
+			var $u_name=$(""+inpId).val();
+			console.log(Reg);
+			var reg=eval(Reg);
+			
+			if(reg.test($u_name)){
+				$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).length==0 ? $("<span class='"+newSpanCla+"'>").html("验证通过").css("color","green").appendTo($("tr:nth-of-type("+trLength+")>td:nth-of-type(2)")) :
+				$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).html("验证通过").css("color","green");
+				
+				console.log(regArr.indexOf(inpId));
+				if(regArr.indexOf(inpId)==-1){
+					regArr.push(inpId);
+					console.log("没找到，push进来"+regArr);
+				}
+				console.log(regArr.length);
+				if(regArr.length==7){
+					$("#regBtn").css({"background":"green","color":"white"})
+				}
+				
+			}else{
+				$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).length==0 ? $("<span class='"+newSpanCla+"'>").html("*验证不通过").css("color","red").appendTo($("tr:nth-of-type("+trLength+")>td:nth-of-type(2)")):
+				$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).html("*验证不通过").css("color","red");
+				$("#regBtn").css({"background":"red","color":"normal"})
+				if(regArr.indexOf(inpId)!=-1){
+					regArr.splice(regArr.indexOf(inpId),1)
+					
+				}
+			}
+		})
+		
+		}
+			
+		fn("#u_name","/^([\u4e00-\u9fa5]|[a-zA-Z0-9_]){4,12}$/","unameReg",1);
+		//密码强度正则，最少6位，包括至少1个大写字母，1个小写字母，1个数字，1个特殊字符
+		fn("#u_pwd","/^.*(?=.{6,})(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*?-_ ]).*$/","unameReg",2);
+		fn("#u_sex","/^[(男|女)]{1}$/","unameReg",3);
+		fn("#u_birthday","/^[0-9]{4}(\-)[0-9]{1,2}(\-)[0-9]{1,2}$/","unameReg",4);
+		fn("#u_salary","/^[0-9]{3,5}$/","unameReg",5);
+		fn("#u_email","/^([A-Za-z0-9_])+\@([A-Za-z0-9_])+[.]([A-Za-z]{2,4})$/","unameReg",6);
+		fn("#u_address","/^([\u4e00-\u9fa5]|[a-zA-Z0-9_]){2,}$/","unameReg",7);
+	
+		/*$("#u_name").blur(function(){
+			var $u_name=$("#u_name").val();
+			var reg=/^([\u4e00-\u9fa5]|[a-zA-Z0-9_]){4,12}$/;
+			
+			if(reg.test($u_name)){
+				$("span.unameReg").length==0 ? $("<span class='unameReg'>").html("验证通过").css("color","green").appendTo($("tr:nth-of-type(1)>td:nth-of-type(2)")) :
+				$("span.unameReg").html("验证通过").css("color","green");
+				
+			}else{
+				$("span.unameReg").length==0 ? $("<span class='unameReg'>").html("*验证不通过").css("color","red").appendTo($("tr:nth-of-type(1)>td:nth-of-type(2)")):
+				$("span.unameReg").html("*验证不通过").css("color","red");
+			}
+		})*/
+		
+	
+		
+				
+
+		$("#regBtn").click(function(){
+			if(regArr.length==7){
+				$.ajax({
+				url:"http://w3nlin4.applinzi.com/user/reg",
+				data:{
+					uname:$("#u_name").val(),
+					upwd:$("#u_pwd").val(),
+					usex:$("#u_sex").val(),
+					ubirthday:$("#u_birthday").val(),
+					usalary:$("#u_salary").val(),
+					uemail:$("#u_email").val(),
+					uaddress:$("#u_address").val(),
+				},
+				type:"get",
+				success:function(result){
+					console.log(result)
+					$("p").html("注册成功").css({color:"green",fontSize:30});
+					setTimeout(function(){window.location.href="login.html";},1000)
+					},
+				failed:function(err){console.log(err);}
+			})
+			}else{
+				alert("请将信息填全");
+			}
+			
+		})
+	})
+</script> 
+
+
+</body>
+</html>

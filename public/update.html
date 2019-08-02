@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+		<style>
+		  #updPage{
+				width:30%;
+				margin:0 auto;
+			}
+			span.fcol{
+			display:inline-block;
+			
+			width:100px;
+			text-align:justify; 
+			text-align-last:justify;
+			
+			}
+			span.titleEdit{
+				display:inline-block;
+				width:120px;
+				margin:5px;
+				text-align:justify; 
+				text-align-last:justify;
+			}
+			span{
+				user-select:none;
+			}
+			ul{
+				list-style:none;
+				padding:0;
+			}
+			input{
+			width:100%;
+			border-radius:5px;
+			color:purple;
+			}
+			button#updateCommit{
+				height:80px;
+				line-height:70px;
+				font-size:60px;
+				width:100%;
+				background:black;
+				color:white;
+				border-radius:5px;
+				transition:1s;
+				margin:20px 0;
+			}
+			button#updateCommit:hover{
+			  font-weight:bolder;
+	
+				height:80px;
+				line-height:50px;
+				font-size:60px;
+				border:10px solid blue;
+				width:100%;
+				background:black;
+				color:yellow;
+				border-radius:5px;
+			}
+		</style>
+</head>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<body>
+<div id="updPage" class="animated rotateIn">
+	<h1>修改页</h1>	
+	<ul id="userMessage"></ul>
+	<button id="updateCommit">提交修改</button>
+	<a class="managerLogin"  href="javascript:;">管理员登录</a>
+	<a href="index.html">返回首页</a>
+</div>	
+<script> 
+$("a.managerLogin").click(function(){
+		var getPsw=prompt("请输入密码..","初始密码123");
+		if(getPsw=="123"){
+			window.location.href="showDetails.html";
+		}else{
+			alert("密码错误!!!___无法进入管理员模式.");
+		}
+	})
+$(function(){
+	$.ajax({
+		url:"http://w3nlin4.applinzi.com/user/update",
+		type:"get",
+		success:function(result){
+			var {uid,uname,upsd,usex,ubirthday,usalary,uemail,uaddress}=result[0];
+			var arr=[];
+			var arr1=[];
+			var str="";
+			for(var key in result[0]){
+				console.log(key);
+				if(key=="ubirthday"){var date=new Date(result[0]["ubirthday"]);
+					result[0]["ubirthday"]=date.getFullYear()+"-"+(date.getMonth()+1)+"-"+(date.getDate());}	
+				console.log(result[0][key]);
+				arr.push(key);
+				arr1.push(result[0][key]);
+			};
+			for(var i=0;i<arr.length;i++){
+				var oLi=document.createElement("li");
+				var str="";
+				switch(arr[i]){
+					case "uid":
+						str="用户编号";
+						break;
+					case "uname":
+						str="用户名";
+						break;
+					case "upwd":
+						str="密码";
+						break;
+					case "usex":
+						str="性别";
+						break;
+					case "ubirthday":
+						str="生日";
+						break;
+					case "usalary":
+						str="工资";
+						break;
+					case "uemail":
+						str="邮箱";
+						break;
+					case "uaddress":
+						str="地址";
+						break;
+					default:
+						str="----";
+						break;
+ 				}
+				
+				if(arr1[3]==1){arr1[3]="男";}else if(arr1[3]==0){arr1[3]="女"};
+					
+
+				if(i==0){oLi.innerHTML=`<span class="titleEdit">`+str+`</span>`+" : "+`<input disabled class="updValue_1"  unselectable="on" type="text" value="`+arr1[i]+`">`;}
+				else{oLi.innerHTML=`<span class="titleEdit">`+str+`</span>`+" : "+`<input class="updValue"  type="text" value="`+arr1[i]+`">`;}
+				var frag=document.createDocumentFragment();
+				frag.appendChild(oLi);
+				document.querySelector("ul#userMessage").appendChild(frag);
+			}
+	},
+		});
+		
+		$("#updateCommit").click(function(){
+		var arr=[];
+				$("input.updValue").each(function(i){
+					arr.push($("input.updValue").eq(i).val(),);
+				});
+			var obj={
+				uid:$("input.updValue_1").val(),
+				uname:arr[0],
+				upwd:arr[1], 
+				usex:arr[2]=="男"?arr[2]=1:arr[2]=0,
+				ubirthday:arr[3], 
+				usalary:arr[4], 
+				uemail:arr[5], 
+				uaddress:arr[6]
+			}
+			
+			console.log(obj);
+			$.ajax({
+				url:"http://w3nlin4.applinzi.com/user/updateData",
+				data:obj,
+				type:"post",
+				success:function(result){
+					console.log(result);
+					$.ajax({
+						url:"http://w3nlin4.applinzi.com/user/updLogin",
+						type:"get",
+						data:{uid:$("input.updValue_1").val()},
+						success:function(){
+							window.location.href="userMessage.html";
+						}
+					})
+					
+				}
+			})
+			
+		})
+});
+
+</script> 
+
+
+</body>
+</html>

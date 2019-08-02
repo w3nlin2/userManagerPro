@@ -1,0 +1,19 @@
+SET NAMES UTF8;
+DROP DATABASE IF EXISTS umm;
+CREATE DATABASE umm CHARSET=UTF8;
+USE umm;
+CREATE TABLE user_message(
+  uid INT PRIMARY KEY AUTO_INCREMENT,
+  uname VARCHAR(8) NOT NULL,
+  upwd VARCHAR(30),
+  usex BOOL DEFAULT 0,
+  ubirthday DATE,
+  usalary DECIMAL(8,2), #999999.99
+  uemail VARCHAR(20),
+  uaddress VARCHAR(50)
+);
+
+
+INSERT INTO user_message VALUES(NULL,'东哥',Aa_123456,1,'1990-5-5',6000,'111111qq.com','北京省');
+INSERT INTO user_message VALUES(NULL,'亮哥',Aa_123456,1,'1992-7-7',7000,'xx0022qq.com','北京省');
+

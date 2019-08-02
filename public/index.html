@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.min.css">
+		<style>
+		body{
+			padding:0;
+			margin:0;
+			
+		}
+		img{
+			width:100%;
+			height:100%;
+			position:fixed;
+			z-index:1;
+		}
+		#main,#indexPage{position:relative;z-index:2}
+		#main{
+			font-size:80px;
+			text-align:center;
+			font-family:"chiller";
+			padding:50px;
+			
+			font-weight:bolder;
+		}
+			#indexPage{
+			
+				margin:0 auto;
+				text-align:center;
+				width:60%;
+				padding:150px 0;
+				border:10px solid rgba(0,0,0,0.1);;
+				outline:10px solid rgba(255,255,255,0.9);
+				background:rgba(255,255,255,0.5);
+				
+			}
+			#indexPage>h1{
+				width:200px;
+				height:100px;
+				margin:0 auto;
+				font-size:80px;
+				letter-spacing:10px;
+				text-align:center;
+				
+			}
+			#indexPage>div.aPart{
+				margin-top:80px;
+			}
+			#indexPage>div.aPart>a{
+				font-size:40px;
+				padding:0 30px;
+				display:inline-block;
+				border:10px solid rgba(0,0,0,0.5);
+				color:white;
+				text-decoration:none;
+				background-color:grey;
+				background-size:20%;
+				margin:10px 10px;
+				border-radius:20px;
+				box-shadow: 0 0 0 5px rgba(255,255,255,.5);
+			}
+				#indexPage>div.aPart>a:hover{
+				color:black;
+				font-weight:bold;
+			}
+			#indexPage>div.aPart>a>span{
+				display:block;
+			}
+		</style>
+</head>
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<body>
+<img src="http://www.51pptmoban.com/d/file/2014/11/22/16d8158cec49feb8be3a9304a23d05ad.jpg">
+<div id="main">用户单表管理系统</div>
+<div id="indexPage">
+	<h1 class="animated infinite rubberBand delay-2s">首页</h1>
+	<div class="aPart">
+		<a  href="regist.html"><span class="animated infinite fadeIn  ">注册</span></a>
+		<a  href="login.html"><span class="animated infinite fadeIn  ">登录</span></a>
+		<a class="managerLogin"  href="javascript:;"><span class="animated infinite fadeIn  ">管理员登录</span></a>
+	</div>
+</div>
+<script>
+	$("a.managerLogin").click(function(){
+		var getPsw=prompt("请输入密码..","初始密码123");
+		if(getPsw=="123"){
+			window.location.href="showDetails.html";
+		}else{
+			alert("密码错误!!!___无法进入管理员模式.");
+		}
+	})
+</script>
+</body>
+</html>
