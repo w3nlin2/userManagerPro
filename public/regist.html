@@ -65,7 +65,7 @@
 	<tr><td><span class="fcol">生日</span><span>:</span></td><td><input id="u_birthday" placeholder="0000-00-00" type="text"> </td></tr>
 	<tr><td><span class="fcol">工资</span><span>:</span></td><td><input id="u_salary" placeholder="3-5为数字" type="text"> </td></tr>
 	<tr><td><span class="fcol">邮箱</span><span>:</span></td><td><input id="u_email" placeholder="xxx..@xx.xxx" type="text"> </td></tr>
-  <tr><td><span class="fcol">住址</span><span>:</span></td><td><input id="u_address" placeholder="任意字符" type="text"> </td></tr>
+  <tr><td><span class="fcol">省份</span><span>:</span></td><td><input id="u_address" placeholder="3位数,如:福建省:" type="text"> </td></tr>
 </table>
 <button id="regBtn">注册</button> 
 <p></p>
@@ -96,8 +96,34 @@
 			var $u_name=$(""+inpId).val();
 			console.log(Reg);
 			var reg=eval(Reg);
-			
-			if(reg.test($u_name)){
+			var unameT_f=false;
+			if(inpId=="#u_name"){
+				
+				$.ajax({
+					url:"http://w3nlin4.applinzi.com/user/regUserReg",
+					type:"get",
+					data:{uname:$u_name},
+					success:function(result){
+						if(result.length>0){
+						unameT_f=true;
+						console.log(result);
+						}
+						
+					}
+				})
+			}
+
+			setTimeout(function(){
+				if(reg.test($u_name)){
+				
+				if(unameT_f){
+					unameT_f=false;
+					$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).length==0 ? $("<span class='"+newSpanCla+"'>").html("-用户名已存在-").css("color","red").appendTo($("tr:nth-of-type("+trLength+")>td:nth-of-type(2)")) :
+				$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).html("-用户名已存在-").css("color","red");
+				$("#regBtn").css({"background":"red","color":"normal"})}
+				else{
+					unameT_f=false;
+					
 				$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).length==0 ? $("<span class='"+newSpanCla+"'>").html("验证通过").css("color","green").appendTo($("tr:nth-of-type("+trLength+")>td:nth-of-type(2)")) :
 				$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).html("验证通过").css("color","green");
 				
@@ -110,16 +136,33 @@
 				if(regArr.length==7){
 					$("#regBtn").css({"background":"green","color":"white"})
 				}
-				
+				}
 			}else{
-				$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).length==0 ? $("<span class='"+newSpanCla+"'>").html("*验证不通过").css("color","red").appendTo($("tr:nth-of-type("+trLength+")>td:nth-of-type(2)")):
+				
+					
+
+					
+				
+				if(unameT_f){
+					unameT_f=false;
+					$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).length==0 ? $("<span class='"+newSpanCla+"'>").html("-该用户已存在-").css("color","red").appendTo($("tr:nth-of-type("+trLength+")>td:nth-of-type(2)")) :
+				$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).html("-该用户已存在-").css("color","red");
+				$("#regBtn").css({"background":"red","color":"normal"})}else{
+					unameT_f=false;
+					$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).length==0 ? $("<span class='"+newSpanCla+"'>").html("*验证不通过").css("color","red").appendTo($("tr:nth-of-type("+trLength+")>td:nth-of-type(2)")):
 				$("tr:nth-of-type("+trLength+")>td:nth-of-type(2)>span."+newSpanCla).html("*验证不通过").css("color","red");
 				$("#regBtn").css({"background":"red","color":"normal"})
 				if(regArr.indexOf(inpId)!=-1){
 					regArr.splice(regArr.indexOf(inpId),1)
-					
 				}
+				}
+
+					
+				
+
+
 			}
+			},200)
 		})
 		
 		}
@@ -131,7 +174,7 @@
 		fn("#u_birthday","/^[0-9]{4}(\-)[0-9]{1,2}(\-)[0-9]{1,2}$/","unameReg",4);
 		fn("#u_salary","/^[0-9]{3,5}$/","unameReg",5);
 		fn("#u_email","/^([A-Za-z0-9_])+\@([A-Za-z0-9_])+[.]([A-Za-z]{2,4})$/","unameReg",6);
-		fn("#u_address","/^([\u4e00-\u9fa5]|[a-zA-Z0-9_]){2,}$/","unameReg",7);
+		fn("#u_address","/^([\u4e00-\u9fa5]|[a-zA-Z0-9_]){3}$/","unameReg",7);
 	
 		/*$("#u_name").blur(function(){
 			var $u_name=$("#u_name").val();

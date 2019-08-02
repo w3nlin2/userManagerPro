@@ -23,6 +23,22 @@ res.send(result);
 }) 
 }); 
 
+//
+//注册前 判断用户名是否存在，如果存在则提示用户名已存在，正则不通过
+router.get("/regUserReg",function(req,res){
+	var username=req.query.uname;
+	pool.query("select * from user_message where uname=?",req.query.uname,function(err,result){
+		console.log(result);
+		if (err) throw err;
+		if(result.length>0){
+			
+			res.send(result);
+		}else{
+			res.send({code:0});
+		}
+	});
+})
+
 
 //查询
 router.get("/getDetails",function(req,res){
@@ -49,6 +65,8 @@ router.get("/login",function(req,res){
 		}
 	});
 })
+
+
 
 //修改后的自动登录
 router.get("/updLogin",function(req,res){
